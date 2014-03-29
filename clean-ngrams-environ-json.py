@@ -2,13 +2,16 @@
 import sys
 import re
 import pprint
+import json
 
-if len(sys.argv) is not 2:   
-	print "USAGE: clean.py input_filename" ls
-
+if len(sys.argv) is not 3:   
+	print "USAGE: {0} input_filename output_filename.json".format(sys.argv[0])
+	print "input should be google ngrams data"
+	print "       format: ngram year match_count vol_count (tab-separated)"
 	quit()
 
 input_filename = sys.argv[1]
+output_filename = sys.argv[2]
 
 input_dict = {}
 fields = []
@@ -18,7 +21,6 @@ with open(input_filename, 'r') as f:
 	while l:
 
 		# load the fields 
-		# format: ngram year match_count vol_count
 		fields = l.split('\t')
 		if len(fields) is not 4:
 			print "ERROR: wrong number of fields ({1}) in line: {0}".format(l, len(fields))
@@ -85,6 +87,13 @@ with open(input_filename, 'r') as f:
 
 
 # print dict to stdout  with pretty formatting
-pprint.pprint(input_dict)
+# pprint.pprint(input_dict)
+
+#output dict as json
+try:
+	with open(output_filename, 'w') as f:
+		f.write(json.dumps(input_dict))
+except:
+	print "ERROR: exception while writing output file {0}".format(output_filename)
 
 
